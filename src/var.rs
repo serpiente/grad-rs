@@ -133,7 +133,7 @@ impl Add for Var {
 impl Sub for Var {
     type Output = Var;
     fn sub(self, other: Var) -> Var {
-        Var::apply_op(AddOp, vec![self, other])
+        Var::apply_op(SubOp, vec![self, other])
     }
 }
 
@@ -181,5 +181,23 @@ mod tests {
         z.backward();
         assert_eq!(x.grad(), 1.0);
         assert_eq!(y.grad(), 1.0);
+    }
+
+    #[test]
+    fn test_sub() {
+        let lhs: Var = 5.0.into();
+        let rhs: Var = 3.0.into();
+        let r = lhs - rhs;
+        assert_eq!(r.value(), 2.0);
+    }
+
+    #[test]
+    fn test_sub_backwards() {
+        let x: Var = 5.0.into();
+        let y: Var = 3.0.into();
+        let z = x.clone() - y.clone();
+        z.backward();
+        assert_eq!(x.grad(), 1.0);
+        assert_eq!(y.grad(), -1.0);
     }
 }

@@ -7,6 +7,7 @@ pub trait Op: 'static {
 
 pub struct AddOp;
 pub struct MulOp;
+pub struct SubOp;
 
 
 impl Op for AddOp {
@@ -30,5 +31,16 @@ impl Op for MulOp {
         let y = parents[1].value();
         parents[0].add_grad(y * grad);
         parents[1].add_grad(x * grad);
+    }
+}
+
+impl Op for SubOp {
+    fn forward(&self, inputs: &[f64]) -> f64 {
+        inputs[0] - inputs[1]
+    }
+
+    fn backward(&self, grad: f64, parents: &[Var]) {
+        parents[0].add_grad(grad);
+        parents[1].add_grad(-grad);
     }
 }
